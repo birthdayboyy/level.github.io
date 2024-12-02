@@ -104,7 +104,16 @@
     }
 
     // Start the tool when the Start button is clicked
-    startButton.addEventListener('click', () => {
+    startButton.addEventListener('click', async () => {
+      // Request permission for motion and orientation sensors
+      if (DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
+        const permission = await DeviceMotionEvent.requestPermission();
+        if (permission !== 'granted') {
+          alert('Permission to access motion data was denied.');
+          return;
+        }
+      }
+
       startButton.style.display = 'none'; // Hide the button
       levelContainer.style.display = 'block'; // Show the level container
 
