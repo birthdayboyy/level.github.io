@@ -12,6 +12,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       height: 100vh;
       overflow: hidden;
       font-family: Arial, sans-serif;
@@ -27,6 +28,7 @@
       border-radius: 50%;
       background: radial-gradient(circle, #ddd, #bbb);
       overflow: hidden;
+      display: none; /* Hidden until Start button is clicked */
     }
 
     .bubble {
@@ -49,15 +51,33 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
+
+    .start-button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      color: #fff;
+      background: #007bff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .start-button:hover {
+      background: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <div class="level-container">
+  <button class="start-button" id="startButton">Start</button>
+  <div class="level-container" id="levelContainer">
     <div class="bubble" id="bubble"></div>
     <div class="center-dot"></div>
   </div>
 
   <script>
+    const startButton = document.getElementById('startButton');
+    const levelContainer = document.getElementById('levelContainer');
     const bubble = document.getElementById('bubble');
     const container = document.querySelector('.level-container');
     const containerSize = container.offsetWidth;
@@ -66,13 +86,14 @@
     // Calculate the boundaries for the bubble
     const maxOffset = (containerSize - bubbleSize) / 2;
 
+    // Function to update the bubble position
     function updateBubblePosition(event) {
       const tiltX = event.beta; // X-axis tilt: front/back
       const tiltY = event.gamma; // Y-axis tilt: left/right
 
       // Normalize tilt values
       const x = Math.max(-90, Math.min(90, tiltX)); // Clamp values between -90 and 90
-      const y = Math.max(-90, Math.min(90, tiltY)); 
+      const y = Math.max(-90, Math.min(90, tiltY));
 
       // Convert tilt values to bubble position
       const bubbleX = (y / 90) * maxOffset; // Horizontal movement
@@ -82,8 +103,14 @@
       bubble.style.transform = `translate(${bubbleX}px, ${-bubbleY}px)`;
     }
 
-    // Listen for device orientation changes
-    window.addEventListener('deviceorientation', updateBubblePosition);
+    // Start the tool when the Start button is clicked
+    startButton.addEventListener('click', () => {
+      startButton.style.display = 'none'; // Hide the button
+      levelContainer.style.display = 'block'; // Show the level container
+
+      // Listen for device orientation changes
+      window.addEventListener('deviceorientation', updateBubblePosition);
+    });
   </script>
 </body>
 </html>
